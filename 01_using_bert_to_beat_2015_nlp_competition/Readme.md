@@ -18,7 +18,7 @@ The data folder contains the following:
 dev.data  test.data  test.label  train.data
 ```
 Let's take a look at the data:
-```
+```python
 import pandas as pd
 df = pd.read_csv("SemEval-PIT2015-github/data/train.data", sep="\t", names=["topicId", "topic_name", "sent1", "sent2", "label", "sent1_tag", "sent2_tag"])
 ```
@@ -34,7 +34,7 @@ The label for test data looks slightly different:
 ```
 This just shows the number of experts who voted for similarity.  
 Here is the remap function to turn these into true/false labels, as per competition guidelines:
-```
+```python
 def label_remap_train(label_str):
     numbers = label_str.strip("()").split(", ")
     number = int(numbers[0])
@@ -52,7 +52,7 @@ def label_remap_val(label_str):
     return 2 # to be filtered out
 ```
 Here is the full dataset load code:
-```
+```python
 %pip install -U "tensorflow-text==2.13.*"
 %pip install "tf-models-official==2.13.*"
 import tensorflow as tf
@@ -92,7 +92,7 @@ val_ds = load_data("SemEval-PIT2015-github/data/test.data", is_val=True)
 On top of loading train/dev/test data, I am also converting it to tensorflow tensors and tf.Dataset.
 ## Getting the model
 I am following [this](https://www.tensorflow.org/text/tutorials/classify_text_with_bert) tutorial from Tensorflow to get and apply the model:
-```
+```python
 import os
 import shutil
 
@@ -135,7 +135,7 @@ Let's discuss a little bit about what is going on here.
 - Converting variable-length list of tokens into fixed length (128). Extra tokens are discarded. If input length is less then 128, input is padded with zero tokens; to distinguish real and padding tokens, another "mask" input is used.
 "Type Ids" represent segments. Since we passed our text as a single input, they all are equal to 0.  
 Since our actual task at hand requires 2 inputs, let's fix this:
-```
+```python
 preprocessor = hub.load(tfhub_handle_preprocess)
 tokenize = hub.KerasLayer(preprocessor.tokenize)
 s1 = tf.constant(["this is such an amazing movie!"])
@@ -161,7 +161,7 @@ Type Ids   : [0 0 0 0 0 0 0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0]
 ```
 Instead of the final preprocessing model, we have to patch it together out of tokenization layer and a special "input packing layer". Result - we can now provide 2 (or more!) inputs to our Bert, and pass in corresponding Type Ids/Segment Ids. This piece is crucial for our success in similarity task.  
 Now let's load the actual model:
-```
+```python
 bert_model = hub.KerasLayer(tfhub_handle_encoder)
 bert_results = bert_model(text_preprocessed)
 
@@ -192,7 +192,7 @@ Sequence Outputs Values:[[-0.22726044  0.5517694  -0.13868636 ... -0.47418836  0
    0.54252493]]
 ```
 "Sequence output" is the full output of bert, with `seq_length` * `hidden_dim` dimensions (128 * 768). Pooled output is the embedding of the entire sentence (1 * 128).
-```
+```python
 def build_classifier_model():
   s1_input = tf.keras.layers.Input(shape=(), dtype=tf.string, name='s1_input')
   s2_input = tf.keras.layers.Input(shape=(), dtype=tf.string, name='s2_input')
@@ -213,11 +213,11 @@ classifier_model = build_classifier_model()
 ```
 Now we pack that all together into a single model in tensorflow functional format. We define just 1 dense layer on top of pooled outout, and use it to predict our labels.   
 Note that we defined input as a dictionary:
-```
+```python
 {"s1": s1_input, "s2": s2_input}
 ```
 This format has to correspond to exactly the same format we returned when creating our tf.Dataset; to check that everything works, we can apply this model on a single batch of data like this:
-```
+```python
 for batch in train_ds:
   break
 classifier_model(batch[0])
@@ -225,7 +225,7 @@ classifier_model(batch[0])
 This is an extremely important step when modifying model architecture.  
 
 Now, we define loss and train the actual model:
-```
+```python
 loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 metrics = tf.metrics.BinaryAccuracy()
 epochs = 5
@@ -255,7 +255,7 @@ Epoch 3/3
 ```
 Defined in such a way, we will train both our extra dense layers as well as Bert's original parameters.  
 Now a final bit of housekeeping - getting the scores for test dataset and comparing to 2015 scoreboard:
-```
+```python
 # getting predictions
 all_preds = []
 threshold = 0.1
@@ -296,7 +296,27 @@ while threshold <= 1.0:
   threshold += 0.05
 ```
 ```
-### results
+Threshold:  0.0 ; f1:  0.3455083909180652
+Threshold:  0.05 ; f1:  0.7090464547677262
+Threshold:  0.1 ; f1:  0.7206266318537858
+Threshold:  0.15000000000000002 ; f1:  0.7356948228882835
+Threshold:  0.2 ; f1:  0.7556818181818183
+Threshold:  0.25 ; f1:  0.755043227665706
+Threshold:  0.3 ; f1:  0.7448680351906158
+Threshold:  0.35 ; f1:  0.7462686567164178
+Threshold:  0.39999999999999997 ; f1:  0.7515151515151516
+Threshold:  0.44999999999999996 ; f1:  0.7484662576687117
+Threshold:  0.49999999999999994 ; f1:  0.7261146496815287
+Threshold:  0.5499999999999999 ; f1:  0.7138263665594855
+Threshold:  0.6 ; f1:  0.7124183006535948
+Threshold:  0.65 ; f1:  0.7152317880794702
+Threshold:  0.7000000000000001 ; f1:  0.72
+Threshold:  0.7500000000000001 ; f1:  0.7030716723549488
+Threshold:  0.8000000000000002 ; f1:  0.6920415224913495
+Threshold:  0.8500000000000002 ; f1:  0.6690140845070423
+Threshold:  0.9000000000000002 ; f1:  0.6277372262773724
+Threshold:  0.9500000000000003 ; f1:  0.5846153846153845
 ```
-With a threshold of 0.2 for true/false labels, we achieve f1 score of 0.7556, 0.674 being top-1 result in 2015. Neat!
+With a threshold of 0.2 for true/false labels, we achieve f1 score of 0.7556, 0.674 being top-1 result in 2015. Neat!  
+
 Once again, full code as a jupyter notebook is available [here](https://github.com/adensur/blog/blob/main/01_using_bert_to_beat_2015_nlp_competition/semeval_blogpost.ipynb)
