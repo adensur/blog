@@ -1,4 +1,6 @@
 ## Intro
+All the code is available as a [jupyter notebook](digits_mnist_classification.ipynb)  
+
 Today, we are going to train a simple neural network with just some dense layers to classify images in the MNIST dataset. The dataset contains low-res (28*28) images of digits.  
 The purpose of this post is to showcase that even with the simple network based just on dense layers, without convolutions/transformers and other such stuff, it is possible to build quite an efficient classifier.  
 We pretty much follow [this](https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html) guide with some modifications and explanations.  
@@ -369,4 +371,6 @@ preds
 tensor([[-0.4013, -2.2614, -1.6052, -0.1392,  0.8867, -0.1384, -2.3127,  4.3744,
          -0.4752,  2.1780]], grad_fn=<AddmmBackward0>)
 ```
-Logit for index 7 is indeed the biggest, so the model can correctly classify our example!
+Logit for index 7 is indeed the biggest, so the model can correctly classify our example!  
+
+All the code is available as a [jupyter notebook](digits_mnist_classification.ipynb)
