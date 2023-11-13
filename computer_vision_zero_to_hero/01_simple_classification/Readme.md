@@ -373,4 +373,33 @@ tensor([[-0.4013, -2.2614, -1.6052, -0.1392,  0.8867, -0.1384, -2.3127,  4.3744,
 ```
 Logit for index 7 is indeed the biggest, so the model can correctly classify our example!  
 
+Finally, let's train for 95 more epochs to see how well the model will perform:
+```python
+import time
+start = time.time()
+epochs = 95
+test(test_dataloader, model, loss_fn)
+for t in range(epochs):
+    print(f"Epoch {t+1}\n-------------------------------")
+    train(train_dataloader, model, loss_fn, optimizer)
+    test(test_dataloader, model, loss_fn)
+print("Done in ", time.time() - start, " seconds")
+```
+```
+Epoch 95
+-------------------------------
+loss: 0.123114  [   64/60000]
+loss: 0.191374  [ 6464/60000]
+loss: 0.123738  [12864/60000]
+loss: 0.248473  [19264/60000]
+loss: 0.155376  [25664/60000]
+loss: 0.242983  [32064/60000]
+loss: 0.122463  [38464/60000]
+loss: 0.283924  [44864/60000]
+loss: 0.179754  [51264/60000]
+loss: 0.305273  [57664/60000]
+Test Error: 
+ Accuracy: 94.2%, Avg loss: 0.201665 
+```
+
 All the code is available as a [jupyter notebook](digits_mnist_classification.ipynb)
