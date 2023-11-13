@@ -1,10 +1,13 @@
-In the last video, we've trained a simple dense neural network to classify hand-written digits on MNIST dataset. We've got a marginally decent accuracy of 82.5%. How can we improve it? And what if we wanted to scale it up, from low-res 28 * 28 black-and-white images of just digits, to HD images with a wide selection of objects?  
+In the last video, we've trained a simple dense neural network to classify hand-written digits on MNIST dataset. We've got a marginally decent accuracy of 94.2%. How can we improve it? And what if we wanted to scale it up, from low-res 28 * 28 black-and-white images of just digits, to HD images with a wide selection of objects?  
 Our current approach has the following problems:  
-### Problem 1: parameter matrix size
+- Problem 1: parameter matrix size  
+
 To *project* an image of size 28 * 28 that we've flattened into a single vector with length 784 into inner representation vector of size 512, we need a matrix with 512 * 784 = 401408 parameters ~ 400k parameters. This is already bad, since MNIST only has 60k examples - ideally, number of parameters needs to be smaller than the number of training examples. If we were to train on higher resolution images, 1024 * 768, for example, we will need 1024 * 768 * 512 = 402653184 ~ 400m parameters. And we don't have nearly enough data to train so many parameters efficiently
-### Problem 2: we completely ignore information from 2d representation of the image
+- Problem 2: we completely ignore information from 2d representation of the image  
+
 We flatten the input before passing it into the network. The concept of the digit "7" is much easier represented in 2d - one horizontal line and one diagonal line - than in 1d, with a random set of pixels firing up. It will certainly be very hard for humans to recognize the digit "7" in such a flattened form.
-### Problem 3: we don't use information about pixel proximity
+- Problem 3: we don't use information about pixel proximity  
+
 Humans are mainly capable of recognizing patterns of closely connected parts. It's hard to differentiate one scatter cloud of dust from another, for example. Yet, in our network, we don't use any pixel proximity information - we basically pass an independent set of pixels in. Try distinguishing these pictures:  
 
 ![number seven](image1.png "Title")
@@ -14,8 +17,9 @@ These were number 7 and number 2, with pixels reshuffled in a random, but consis
 ![Edge detection](digit7.png "Title")
 ![Edge detection](digit2.png "Title")  
 
-### Problem 4: every parameter is responsible for just 1 pixel
-If we have a network that can recognize a digit "7" from a specific image, shifting the image by just 1 pixel will result in the activation of completely different parameters. This is why we need so many of them! Again, this is not how humans recognize images. Due to how our eye "slides over" the image, shifting of the pattern being recognized hardly changes anything. We should expect that a succesful pattern recognition system will have the same property.
+- Problem 4: Spatial awareness  
+
+If we have a network that can recognize a digit "7" from a specific image, shifting the image by just 1 pixel will result in the activation of completely different parameters. Every parameter is responsible for just 1 pixel! This is why we need so many of them. Again, this is not how humans recognize images. Due to how our eyes "slide over" the image, we can recognize a pattern, like number 7, no matter where within the image it is located. We should expect that a succesful pattern recognition system will have the same property.
 ## Convolutions
 Convolutions solve all 3 of these.  
 Convolutions are defined like this [(wiki)](https://en.wikipedia.org/wiki/Kernel_(image_processing)):
@@ -44,7 +48,7 @@ Next, we "shift" the kernel 1 pixel to the right:
 
 We get  
 $$1 * 0 + 2 * 1 + 4 * 2 + 5 * 3 = 25$$  
-We continue "tiling" the image with the kernel. Bottom left will yield:  
+We continue "sliding" the kernel along the image. Bottom left will yield:  
 $$3*0 + 4*1 + 6*2 + 7*3 = 37$$  
 And bottom right:  
 $$4*0 + 5 * 1 + 7 * 2 + 8*3 = 43$$  
@@ -64,7 +68,7 @@ And here are some links that show more examples and interactive demos:
 - https://homepages.inf.ed.ac.uk/rbf/HIPR2/sobel.htm  
 - https://www.websupergoo.com/helpie/default.htm?page=source%2F2-effects%2Fconvolution.htm  
 ### Convolutions and dimensionality
-In our first example, with 3x3 input image and 2x2 kernel, we got a 2x2 result. More generally, applying an W*H kernel as convolution reduces image size by (W-1, H-1). For example, applying a 7x7 kernel to a 640*480 image will yield 634 * 474 image. In addition to these, there are some convolution parameters that let us control it further:  
+In our first example, with 3x3 input image and 2x2 kernel, we got a 2x2 result. More generally, applying a $W*H$ kernel as convolution reduces image size by (W-1, H-1). For example, applying a 7x7 kernel to a 640*480 image will yield 634 * 474 image. In addition to these, there are some convolution parameters that let us control it further:  
 - Stride: instead of sliding the kernel along the input by shifting by 1 pixel on each step, we can shift the kernel by *stride* pixels at once. This will reduce the output size roughly in *stride* times.
 - Padding: we can pad initial image with zeroes. This technique is mostly used to preserve original image size after applying a convolution  
 
@@ -93,12 +97,22 @@ Here is the example of applying an edge detecting kernel, followed by 2x2 max po
 
 ![Max pooling](image7.png "Title")  
 
-This allowed us to reduce image size from 28*28 to 13*13 without much loss of understandability.
+This allowed us to reduce image size from $28*28$ to $13*13$ without much loss of understandability.
 
 ## Convolutions in neural networks
-In neural networks, instead of trying to preprocess images using predefined convolutions (like edge detection, sharpen etc), we define convolutions with random, trainable parameters, and let the network figure it out for itself. We start with input image, apply a set of such convolutions intermixed with pooling operations with dimensionality reduction; then, we apply a bunch of dense layers to do our actual classification task.  
+In neural networks, instead of trying to preprocess images using predefined convolutions (like edge detection o sharpen), we define convolutions with random, trainable parameters, and let the network figure it out for itself. We start with input image, apply a set of such convolutions intermixed with pooling operations with dimensionality reduction; then, we apply a bunch of dense layers to do our actual classification task.  
 
-Note that the problems that we've discussed in the beginning are solved with convolutions. We use the same kernel (typically rather small, 3x3 or 7x7) to process an entire image, so the number of parameters is much smaller; convolutions completely rely on pixel proximity in 2d space; due to the "sliding" of the kernel along the input, we get similar qualities to human recognition, with eyes sliding along the image and being able to recognize stuff at any spot.  
+Note that the problems that we've discussed in the beginning are solved with convolutions:  
+- Problem 1: parameter matrix size  
+
+We use the same kernel (typically rather small, 3x3 or 7x7) to process an entire image, so the number of parameters is much smaller
+- Problems 2 and 3: 2d information and pixel proximity  
+
+Convolutions completely rely on pixel proximity in 2d space. 
+
+- Problem 4: spatial awareness  
+
+Convolution kernel "sliding" along the image is pretty similar to human eyes sliding along the image. We should expect similar properties from such a network.
 
 ## MNIST digits classification with convolutions
 Dataset fetching and device setup is the same as for dense neural network from previous [post](https://github.com/adensur/blog/tree/main/computer_vision_zero_to_hero/01_simple_classification).  
@@ -282,4 +296,4 @@ Test Error:
 ```
 Dense network had 82.5% accuracy after 5 epochs, and 94.2% accuracy after another 5 epochs. Convolution-based network has 30.1% accuracy after first 5 epochs, but then 97.8% after another 95 - so it takes a bit longer to start up, but then achieves much better accuracy. At this point it is still undertrained though.  
 
-Full code is available [here][convolutions.ipynb]
+Full code is available [here](convolutions.ipynb)
