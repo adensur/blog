@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/78JYJ6qpk_A)  
+
 In the last video, we've trained a simple dense neural network to classify hand-written digits on MNIST dataset. We've got a marginally decent accuracy of 94.2%. How can we improve it? And what if we wanted to scale it up, from low-res 28 * 28 black-and-white images of just digits, to HD images with a wide selection of objects?  
 Our current approach has the following problems:  
 - Problem 1: parameter matrix size  

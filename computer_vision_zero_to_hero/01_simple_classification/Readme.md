@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/JiVlCtrnrZY)  
+
 ## Intro
 All the code is available as a [jupyter notebook](digits_mnist_classification.ipynb)  
 

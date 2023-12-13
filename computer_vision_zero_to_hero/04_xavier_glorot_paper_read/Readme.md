@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/mEt2DsyaAc8)  
+
 Original paper: https://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf
 Authored by Xavier Glorot and Yoshua Bengio back in 2010. We know Xavier Glorot from Glorot initialisation (sometimes called Xavier initialisation) that is now an industry standard.
 ### Dataset and research setup

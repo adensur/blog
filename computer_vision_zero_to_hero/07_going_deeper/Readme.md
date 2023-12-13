@@ -1,3 +1,4 @@
+The content is also available as [video](https://youtu.be/ic3PSMpa7TU)
 This post talks about 3 specific things:  
 - Residual connections
 - Batch Normalization

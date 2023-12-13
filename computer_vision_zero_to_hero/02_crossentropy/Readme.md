@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/aHCFjFs_sec)  
+
 ## Cross Entropy, or Log Loss
 In the last post, we've talked about training a simple neural network to classify digits in a dataset. We used `crossentropy` as our loss function.  
 I've been a machine learning engineer for almost 10 years now, and I can say that for most of industrial applications, you don't really need to understand the logic behind this loss, and can simply google the final formula or use an existing implementation. In addition, there aren't many losses out there, and most ML engineers are able to make a simple connection. Do we need to predict a floating point number? Use MSE. Do we need to predict probabilities? Use CrossEntropy.

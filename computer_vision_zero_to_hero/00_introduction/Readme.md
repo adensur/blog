@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/TKuyp5jXt-M)  
+
 The last few years were exceptionally bountiful for Computer Vision. From simple models that do basic image classification, to desribing a scene in real time in human language; generating exceptionally detailed and beautiful images based on text prompt; "morphing" your photo into anime character; editing an image, replacing one object with another; translating a video of someone talking into another language with original actor's voice and modifying lip movements in such a way as to make it look like he was the one talking in this language; creating a "deepfake" video of a politician saying things they never did. It's like a pandora box that was opened at some point, and now gives more and more surprises!  
 
 And it doesn't stop at deepfakes and fun. Computer Vision is used in lots of industries - self driving cars, industrial damage sniffing drones, cancer recognition from MRI images and so on.  

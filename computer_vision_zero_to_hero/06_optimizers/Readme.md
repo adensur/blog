@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/L5mMES825Pc)  
+
 ### What is an Optimizer?
 Optimizers are like "teachers" for the neural networks - they are responsible for tuning parameters of the network to make sure it outputs what we need - this condition is usually represented as minimization of some loss function.  
 Recall that we can view neural networks as computational graphs:  

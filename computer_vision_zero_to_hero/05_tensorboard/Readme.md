@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/8Cn4lkzub-A)  
+
 In the last [post](https://github.com/adensur/blog/blob/main/computer_vision_zero_to_hero/04_xavier_glorot_paper_read/Readme.md), we have looked at the paper dedicated to studying the effects of activation functions and their saturation, and parameter initialization on the training of a neural network: 
 - How Sigmoid activation function is bad, by not having zero mean, and by saturating at 0, thus stifling the gradient flow backwards
 - How variance during random parameter initialization might cause the varience of the activations during forward prop, or of gradients during backward prop to explode or vanish to zero, and how to do parameter initialization to counter that.  
