@@ -1,3 +1,5 @@
+The content is also available as [video](https://youtu.be/uztrVK1BhGw)  
+
 This post describes how to define and train a ResNet model from the [paper](https://arxiv.org/pdf/1512.03385.pdf).  
 This famous model was a winner of 2015 ImageNet competition, surpassing human performance on the dataset with around 5% top-5 accuracy.  
 
