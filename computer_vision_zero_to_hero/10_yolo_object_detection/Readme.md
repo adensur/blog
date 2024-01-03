@@ -74,7 +74,7 @@ However, NMS might have false negatives:
 In this example of a crowd of people, a lof of ground truth objects will have huge overlap between bounding boxes. They will be filtered out by NMS, even if the model was able to correctly identify them. This is one of the major problems with YOLO: it will fail to correctly recognize objects in case there are many of them cramped together in a tight space, with overlapping bounding boxes - think of flocks of birds, crowds of people, etc.  
 
 ## Anchor boxes
-![Sigmoid](./anchor_annotated.png "Title")   
+![Sigmoid](./anchor_annotated.png?raw=true "Title")   
 Sometimes, the image will have 2 or more objects with completely different shapes that would still end up in the same grid cell. To deal with that, YOLO has a concept of "anchor boxes". 
 Anchor boxes are priors of a certain scale and aspect ratio that can be represented as just two numbers - $w_a$ and $h_a$, width and height of the anchor. During training, we match ground truth objects to anchor boxes with the following condition:
 $$\frac{1}{4}<=\frac{w}{w_a}<=4$$
