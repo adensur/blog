@@ -3,7 +3,7 @@ The post is also available as [video](https://youtu.be/fK4liUaT14w)
 This post introduces a new task in computer vision - "object detection". It talks about CoCo dataset, famous object detection dataset that still has an ongoing challenge in 2023; and the mAP metric - the metric used to assess model quality in object detection.
 ## From object classification to localization
 One of the simpler analogues of object detection is called "object localization". That is, given a picture of an object, predict the *bounding box* for this object; but assume that there is always exactly 1 object in the picture. More formally, we want the model to predict 4 numbers: x, y, w, h - corresponding to x,y coords of the upper left corner of the bounding box, and its height and width. Good thing about this is that we can adopt one of our previous models to do that. Before, we had a model that could output 1000 numbers corresponding to class probabilities:  
-![Sigmoid](./logit_model.png "Title")   
+![Sigmoid](./logit_model.png?raw=true "Title")   
 We can simply swap the final layer of the model into something that will output 4 numbers - x, y, w, h:  
 ![Sigmoid](./loc_model.png "Title")   
 We'll also need to swap the loss from CrossEntropy - something that can be used for class predictions and probabilities - to MSE, something that can compare any numbers:  
