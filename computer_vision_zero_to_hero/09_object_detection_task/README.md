@@ -5,15 +5,15 @@ This post introduces a new task in computer vision - "object detection". It talk
 One of the simpler analogues of object detection is called "object localization". That is, given a picture of an object, predict the *bounding box* for this object; but assume that there is always exactly 1 object in the picture. More formally, we want the model to predict 4 numbers: x, y, w, h - corresponding to x,y coords of the upper left corner of the bounding box, and its height and width. Good thing about this is that we can adopt one of our previous models to do that. Before, we had a model that could output 1000 numbers corresponding to class probabilities:  
 ![Sigmoid](./logit_model.png?raw=true "Title")   
 We can simply swap the final layer of the model into something that will output 4 numbers - x, y, w, h:  
-![Sigmoid](./loc_model.png "Title")   
+![Sigmoid](./loc_model.png?raw=true "Title")   
 We'll also need to swap the loss from CrossEntropy - something that can be used for class predictions and probabilities - to MSE, something that can compare any numbers:  
 $$MSE = \sum (y_i - y^{pred}_i)^2$$
 Here, $y_i$ is the true label (a number for size and coordinates of the bounding box) and $y^{pred}_i$ is the predicted label. We sum over all 4 numbers x, y, w, h and over all image examples.   
 Even such a simple solution unlocks a lot of opportunities in CV. We can, for example, predict some important waypoints in human's face instead of bounding box coordinates:  
-![Sigmoid](./selfie.png "Title")   
+![Sigmoid](./selfie.png?raw=true "Title")   
 And using them, calculate head orientation and use that to draw something fun on top of the face, for example, a hat. This approach was used in Snapchat Camera - an app that let's you add cool filters and effects to your camera pictures. Sadly, it was discontinued in 2023.  
 In the same way, we can do pose estimation:  
-![Sigmoid](./pose_estimation.png "Title")   
+![Sigmoid](./pose_estimation.png?raw=true "Title")   
 That might be useful for analysing football statistics, for example. The same approach will work provided that:  
 - We need to output a fixed number of predictions. Say, coordinates for 8 points on a face
 - We have training data with true labels for these predictions, i.e., data with face or pose coordinates.  
