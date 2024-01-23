@@ -19,7 +19,7 @@ optimizer.zero_grad()
 We literally needed only 3 lines to define and use the optimizer. First, we create an optimizer object, passing in the model parameters - the only way of communication to the optimizer (gradients are also stored under `model.parameters()`). At each step in the optimization, we calculated the loss and called `loss.backward()` to compute the gradients; then we called `optimizer.step()` to let the optimizer know that the gradients are ready and to perform one optimization step, actually updating model parameters. Finally, we called `optimizer.zero_grad()` to prepare for the next iteration.  
 ### Gradient Descent
 One of the classical algorithms for optimization - that is, finding a minimum of the loss function - is Gradient Descent. It can be easily visualised for 1d case - loss function depending just on one parameter (the actual plot will be in 2d because we also have value of the loss function as the extra dimension):  
-![Sigmoid](gd_1_white.png "Title")   
+![Sigmoid](./gd_1_white.png?raw=true "Title")
 We start at some point $P_0$; we compute the gradient - in 1d case, simply derivation of the loss function with respect to this parameter. The direction of the gradient (pointing left or right) shows the direction of the growth of the function; the value of the gradient corresponds to the slope of the function - 0 gradient stands for horizontal line; infinite gradient stands for vertical line.   
 We then perform a "step" towards the minus gradient - minus, because we want to minimize the function - by updating the parameters like this:  
 $$\theta_{i+1} = \theta_i - lr\overrightarrow\nabla$$
@@ -51,11 +51,11 @@ Learning rate of `1e-2`, or `0.01` (the blue line) trains the fastest, and achie
 ### Learning Rate Scheduling
 So both big and small learning rates have their advantages and disadvantages; can we invent something that would have the best of both worlds?  
 One attempt of this is called "Learning Rate Scheduling". This is how it might be visualized:  
-![Sigmoid](lr_scheduling_white.png "Title")   
+![Sigmoid](./lr_scheduling_white.png?raw=true "Title")   
 We start with a high learning rate initially, allowing the network to train fast and to "jump out" of potential local minima. After meeting some criteria - train loss growth is below $\epsilon$ after an epoch, for example, or simply "every once in 30 epochs", we decrease the learning rate, allowing the loss function to get closer to the desired minimum.  
 2015 paper "Deep Residual Learning for Image Recognition" [link](https://arxiv.org/pdf/1512.03385.pdf) also used LR scheduling to train their ResNet model that won 2015 ImageNet competition.   
 This is the visualisation of test accuracy for a similar model:  
-![Sigmoid](lr_scheduler.png "Title")    
+![Sigmoid](lr_scheduler.png?raw=true "Title")    
 As we can see, test accuracy "saturates" after training for many epochs with the same learning rate; decreasing learning rate in such cases allows network to further improve accuracy. From several such "lr decrease" steps we get this "ladder" of accuracy.   
 
 Learning Rate scheduling also has analogues in physics and is used, for example, in Metallurgy. There is a process called "annealing" - hardening the metal by heating it up to extreme temperatures and then cooling it down. Metal structure is defined by crystal lattice:  
@@ -84,7 +84,7 @@ And we use momentum instead of the gradient in the parameter update rule:
 $$\theta _{i+1} \leftarrow \theta_i - lr * momentum$$   
 Closest physical analogy to momentum is *speed* in physics. Imagine an actual ball rolling downhill: initially it might get swayed a lot by encountered ridges and potholes; eventually it accumulates some speed in the direction of the prevalent gradient - downhill - and ridges and potholes affect it much less.   
 This is how it might look like in our "mountain saddle" example:  
-![Sigmoid](lr_scheduling3.png "Title")   
+![Sigmoid](lr_scheduling3.png?raw=true "Title")   
 The first step will again "overshoot" the basin and reach on the other side; after several such jumps, the momentum along the ridge cancels out, because we jump in opposite directions each time; momentum along the basin itself keeps accumulating, so we will be moving towards the bottom of the basin much faster.  
 
 Momentum is especially important for Stochastic Gradient Descent, because seeing only a small portion of data will sway the gradient of our loss function in different directions each time. Keeping track of momentum allows the system to remember the prevalent direction, and to converge much faster.  
@@ -95,7 +95,7 @@ Here is a good illustration of overfitting. Imagine that we try to approximate t
 $$y = \frac {1}{1 + 25x^2}$$  
 With a polynome of up to 38 degree:  
 $$\theta_0 + \theta_1x + \theta_2x^2 + ... + \theta_{38}x^{38}$$  
-![Sigmoid](overfitting.png "Title")   
+![Sigmoid](overfitting.png?raw=true "Title")   
 In addition, we choose points `x = 0.1, x = 0.2, x=0.3, ...` and so on as training examples (red dots on the picture above), and points `x = 0.05, x = 0.15, x = 0.25, ...` as test examples (white dots). We train our "model" - parameters $\theta_0, ..., \theta_{38}$ to minimize the loss function (MSE, mean squared error) on the train set.    
 This could've worked somewhat well with a polynome of 2d degree, for example. With 38 degrees, something entirely different happens: we achieved almost zero error rate on all the training examples, but awful error rate on test examples.   
 
@@ -118,8 +118,10 @@ $$M^2_{t+1} \leftarrow \mu_2 * M^2_t + (1-\mu_2) \overrightarrow \nabla ^2$$
 The update rule looks like this:  
 $$\theta _{t+1} = \theta_t - \frac {lr * M}{\sqrt {M^2} + \epsilon}$$  
 The nominator of the fraction looks similar to Momentum technique described below.  
-The denominator has the effect of *per parameter learning rate scheduling*: it remembers the value of the gradient of the loss function with respect to this parameter in the past; if the optimization did some progress for this parameter before, the denominator increases, and the effective learning rate is reduced. $\epsilon$ is a small parameter used for numerical stability.
-![Sigmoid](per_parameter_lr.png "Title")   
+The denominator has the effect of *per parameter learning rate scheduling*: it remembers the value of the gradient of the loss function with respect to this parameter in the past; if the optimization did some progress for this parameter before, the denominator increases, and the effective learning rate is reduced. $\epsilon$ is a small parameter used for numerical stability.  
+
+![Sigmoid](per_parameter_lr.png?raw=true "Title")    
+
 Here is the illustration about how this can work in practice. After doing some "big steps" with high effective learning rate, L2 momentum becomes quite big, and effective learning rate goes down, allowing the optimization to approach potential minimum closer.   
 Main difference to simple lr scheduling is that *effective lr* will be different for each parameter - which is usually a good thing, because different parameters might require different learning rates.  
 ### What's next?
