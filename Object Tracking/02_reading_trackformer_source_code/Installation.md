@@ -34,7 +34,30 @@ prev_out_ind = prev_out_ind.to(device)
 ```
 Before line 94 of `detr_tracking.py` file.   
 
-8. In case of "cuda out of memory" errors
+8. Launch the training 
+```bash
+# crowdhuman
+python src/train.py with \
+    crowdhuman \
+    deformable \
+    multi_frame \
+    tracking \
+    output_dir=models/crowdhuman_deformable_multi_frame
+
+# mot
+python src/train.py with \
+    mot17 \
+    deformable \
+    multi_frame \
+    tracking \
+    output_dir=models/mot17_crowdhuman_deformable_multi_frame
+```
+
+Crowdhuman pretraining uses object detection data (aka just immages annotated with detected objects and bounding boxes) to "bootstrap" into object tracking by using image augmentation.   
+
+MOT dataset contains actual video sequences with annotated 
+
+9. In case of "cuda out of memory" errors
 You can go to `cfgs/train.yaml` and modify some parameters to reduce memory footprint:
 - batch_size
 - enc_layers/dec_layers
