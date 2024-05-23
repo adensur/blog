@@ -21,20 +21,14 @@ Mostly needed to build custom "Deformable Attention" cuda layer. The code for de
 
 5. Go over instructions from the repository [here](https://github.com/timmeinhardt/trackformer/blob/main/docs/INSTALL.md) starting from #3 - downloading datasets and pretrained model weights.   
 
-6. Install pycocotools
-```bash
-pip install pycocotools
-```
-It used to be necessary to do some custom install steps. Right now it is freely available via pip, you can put it in requirements.txt as well.    
-
-7. Fix `RuntimeError: indices should be either on cpu or on the same device as the indexed tensor (cpu)`
+6. Fix `RuntimeError: indices should be either on cpu or on the same device as the indexed tensor (cpu)`
 By adding the following line:
 ```python
 prev_out_ind = prev_out_ind.to(device)
 ```
 Before line 94 of `detr_tracking.py` file.   
 
-8. Launch the training 
+7. Launch the training 
 ```bash
 # crowdhuman
 python src/train.py with \
@@ -57,14 +51,14 @@ Crowdhuman pretraining uses object detection data (aka just immages annotated wi
 
 MOT dataset contains actual video sequences with annotated 
 
-9. In case of "cuda out of memory" errors
+8. In case of "cuda out of memory" errors
 You can go to `cfgs/train.yaml` and modify some parameters to reduce memory footprint:
 - batch_size
 - enc_layers/dec_layers
 - hidden_dim
 None of this is recommended for a production tracking system, but might work for you if you just want to read the code for educational purposes.
 
-10. Create a jupyter notebook at the root of the repository
+9. Create a jupyter notebook at the root of the repository
 Add the following convenience stubs:
 ```python
 # COCO classes

@@ -76,6 +76,7 @@ ptyprocess==0.7.0
 py==1.8.2
 py-cpuinfo
 pyaml==20.4.0
+pycocotools
 pycodestyle==2.6.0
 pycparser==2.20
 pyflakes==2.2.0
