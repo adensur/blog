@@ -58,7 +58,18 @@ You can go to `cfgs/train.yaml` and modify some parameters to reduce memory foot
 - hidden_dim
 None of this is recommended for a production tracking system, but might work for you if you just want to read the code for educational purposes.
 
-9. Create a jupyter notebook at the root of the repository
+9. Install the repo globally on the system
+```bash
+pip install -e .
+```
+This will make it importable
+
+10. Install ipykernel package for debugging
+```bash
+pip install -U ipykernel
+```
+
+11. Create a jupyter notebook at the root of the repository
 Add the following convenience stubs:
 ```python
 # COCO classes
