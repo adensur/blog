@@ -221,9 +221,9 @@ data/MOT17
         ├── MOT17-13-FRCNN
         └── MOT17-13-SDP
 ```
-- CrowdHuman
-CrowdHuman comes in 6 files: annotation_train.odgt, annotation_val.odgt, CrowdHuman_train01.zip, CrowdHuman_train02.zip, CrowdHuman_train03.zip, CrowdHuman_val.zip
-Upon unzipping, images from both CrowdHuman_train0*.zip and CrowdHuman_val.zip will put images into Images folder, so it's best to be careful about that:   
+- CrowdHuman   
+CrowdHuman comes in 6 files: `annotation_train.odgt`, `annotation_val.odgt`, `CrowdHuman_train01.zip`, `CrowdHuman_train02.zip`, `CrowdHuman_train03.zip`, `CrowdHuman_val.zip`   
+Upon unzipping, images from both `CrowdHuman_train0*.zip` and `CrowdHuman_val.zip` will put images into Images folder, so it's best to be careful about that:   
 ```bash
 # in the downloaded CrowdHuman directory
 unzip CrowdHuman_train01.zip
@@ -265,15 +265,58 @@ Now, place the [gen_labels_crowd_id.py](gen_labels_crowd_id.py) script to the ro
 ```bash
 python gen_labels_crowd_id.py
 ```
-6. Download pretrained weights for the detection model
+6. Download pretrained weights for the detection model  
 MOTR authors used "iterative bounding box refinement" from [Deformable Detr](https://github.com/fundamentalvision/Deformable-DETR?tab=readme-ov-file#main-results)
-7. Launch training script
+7. Launch training script  
 Remove comments from the file; change the pretrained weights path to the correct one: `coco_model_final.pth` -> `r50_deformable_detr_plus_iterative_bbox_refinement-checkpoint.pth` in my case.  
-Add `--mot_path data` command to point it to the correct dataset path that we've created above, then launch the script.   
+Add `--mot_path data` command to point it to the correct dataset path that we've created above.  
+Here is how the final script looks for me:  
+```bash
+# ------------------------------------------------------------------------
+# Copyright (c) 2021 megvii-model. All Rights Reserved.
+# ------------------------------------------------------------------------
+# Modified from Deformable DETR (https://github.com/fundamentalvision/Deformable-DETR)
+# Copyright (c) 2020 SenseTime. All Rights Reserved.
+# ------------------------------------------------------------------------
+
+
+# for MOT17
+
+PRETRAIN=r50_deformable_detr_plus_iterative_bbox_refinement-checkpoint.pth
+EXP_DIR=exps/e2e_motr_r50_joint
+python3 -m torch.distributed.launch --nproc_per_node=1 \
+    --use_env main.py \
+    --meta_arch motr \
+    --use_checkpoint \
+    --dataset_file e2e_joint \
+    --epoch 200 \
+    --with_box_refine \
+    --lr_drop 100 \
+    --lr 2e-4 \
+    --lr_backbone 2e-5 \
+    --pretrained ${PRETRAIN} \
+    --output_dir ${EXP_DIR} \
+    --batch_size 1 \
+    --sample_mode 'random_interval' \
+    --sample_interval 10 \
+    --sampler_steps 50 90 150 \
+    --sampler_lengths 2 3 4 5 \
+    --update_query_pos \
+    --merger_dropout 0 \
+    --dropout 0 \
+    --random_drop 0.1 \
+    --fp_ratio 0.3 \
+    --query_interaction_layer 'QIM' \
+    --extra_track_attn \
+    --data_txt_path_train ./datasets/data_path/joint.train \
+    --data_txt_path_val ./datasets/data_path/mot17.train \
+    --mot_path data
+```  
+Now launch the script.   
 ```bash
 bash configs/r50_motr_train.sh
 ```
-8. Fixing "ImportError: cannot import name '_NewEmptyTensorOp' from 'torchvision.ops.misc'" error  
+8. Fixing `"ImportError: cannot import name '_NewEmptyTensorOp' from 'torchvision.ops.misc'"` error  
 The error originates from incorrect version parsing in [utils/misc.py](https://github.com/megvii-research/MOTR/blob/main/util/misc.py#L32-L61) for newer torchvision versions. Simply remove lines 32-61 if your torchvision version is 0.8 or above.
-9. Fixing "rank0]: FileNotFoundError: [Errno 2] No such file or directory: 'data/crowdhuman/images/val/273278,41ba000090737c94.png'"    
+9. Fixing `"rank0]: FileNotFoundError: [Errno 2] No such file or directory: 'data/crowdhuman/images/val/273278,41ba000090737c94.png'"`    
 This error originates from the fact that MOTR code expects CrowdHuman dataset to have .png files, even though they are currently in .jpg (at least when downloaded from google drive). To fix, simply comment [these lines](https://github.com/megvii-research/MOTR/blob/main/datasets/joint.py#L101-L102) (`datasets/joint.py:101-102)
