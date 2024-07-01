@@ -12,6 +12,8 @@ cd MOTR
 ```bash
 conda install pytorch torchvision pytorch-cuda=12.1 -c pytorch -c nvidia
 pip install -r requirements.txt
+# needed for dataset conversion scripts
+pip install numpy
 
 cd ./models/ops
 sh ./make.sh
@@ -91,10 +93,6 @@ mkdir data/MOT17/images/train
 mkdir data/MOT17/images/test
 cp -r path_to_downloaded_mot17/train/* data/MOT17/images/train
 cp -r path_to_downloaded_mot17/test/* data/MOT17/images/test/
-
-
-cp -r /home/ubuntu/datasets/MOT17/MOT17/train/* data/MOT17/images/train/
-cp -r /home/ubuntu/datasets/MOT17/MOT17/test/* data/MOT17/images/test/
 ```
 After this, `data` directory structure should look like this:
 ```
@@ -242,11 +240,6 @@ cp -r path_to_downloaded_crowdhuman/train data/crowdhuman/images/train
 cp -r path_to_downloaded_crowdhuman/val data/crowdhuman/images/val
 cp -r path_to_downloaded_crowdhuman/annotation_train.odgt data/crowdhuman/
 cp -r path_to_downloaded_crowdhuman/annotation_val.odgt data/crowdhuman/
-
-cp -r /home/ubuntu/datasets/CrowdHuman/train data/crowdhuman/images/train
-cp -r /home/ubuntu/datasets/CrowdHuman/val data/crowdhuman/images/val
-cp -r /home/ubuntu/datasets/CrowdHuman/annotation_train.odgt data/crowdhuman/
-cp -r /home/ubuntu/datasets/CrowdHuman/annotation_val.odgt data/crowdhuman/
 ```
 This is how `data/crowdhuman` directory should look now:
 ```
@@ -268,8 +261,10 @@ python gen_labels_crowd_id.py
 6. Download pretrained weights for the detection model  
 MOTR authors used "iterative bounding box refinement" from [Deformable Detr](https://github.com/fundamentalvision/Deformable-DETR?tab=readme-ov-file#main-results)
 7. Launch training script  
+Script is located under `configs/r50_motr_train.sh`  
 Remove comments from the file; change the pretrained weights path to the correct one: `coco_model_final.pth` -> `r50_deformable_detr_plus_iterative_bbox_refinement-checkpoint.pth` in my case.  
 Add `--mot_path data` command to point it to the correct dataset path that we've created above.  
+Modify `--nproc_per_node` according to the number of GPUs on your host (like 1)  
 Here is how the final script looks for me:  
 ```bash
 # ------------------------------------------------------------------------
