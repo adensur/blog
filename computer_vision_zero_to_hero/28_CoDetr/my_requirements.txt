@@ -1,0 +1,7 @@
+opencv-python
+terminaltables
+six
+pycocotools
+fairscale
+timm
+yapf==0.40.1
