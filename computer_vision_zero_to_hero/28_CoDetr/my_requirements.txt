@@ -5,3 +5,4 @@ pycocotools
 fairscale
 timm
 yapf==0.40.1
+einops
