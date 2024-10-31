@@ -110,7 +110,7 @@ Self attention is achieved by applying a "scaled dot product attention" operatio
 
 ![Sigmoid](./scaled_dot_product_attention.png "Title")   
 
-We take sequence elements, each element being a vector of 256 numbers - Embedding dimensionality - and project them into Query, Key and Value vectors using 3 independant dense layers. We then calculate the `dot product` between every possible pairs of Queries and Keys. A `dot product` operation is calculated by just multiplying the vectors element-wise, and then summing the result. The result of the dot product of two vectors is just a single number. Dot product geometric interpretation is "orthogonality": the dot product is maximal if the vectors are orthogonal to each other.  
+We take sequence elements, each element being a vector of 256 numbers - Embedding dimensionality - and project them into Query, Key and Value vectors using 3 independant dense layers. We then calculate the `dot product` between every possible pairs of Queries and Keys. A `dot product` operation is calculated by just multiplying the vectors element-wise, and then summing the result. The result of the dot product of two vectors is just a single number. Dot product geometric interpretation is "orthogonality": the dot product is minimal if the vectors are orthogonal to each other.  
 
 By computing dot product between every possible pair, we arrive at an "Attention Mask". It will be used later to determine which weights to use for each element of a sequence. Here is a visualisation of this:   
 
