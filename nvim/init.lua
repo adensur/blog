@@ -1,0 +1,2 @@
+require("theprimeagen")
+print("hello")
