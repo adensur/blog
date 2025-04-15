@@ -37,4 +37,4 @@ export PYTHONFAULTHANDLER=1
 # module load NCCL/2.4.7-1-cuda.10.0
 
 # run script from above
-python tumor_pretrain.py --data datasets/pidray_converted/train/all_train_images2 --epochs 1000 --output out/ssl11 --batch-size 512 --num-nodes 2 --num-gpus 8
+python ssl_pretrain.py --data datasets/pidray_converted/train/all_train_images2 --epochs 1000 --output out/ssl11 --batch-size 512 --num-nodes 2 --num-gpus 8
